@@ -141,21 +141,21 @@ class rectmesh:
             for j in xrange(self.mesh_size[1]-1):
                 if self.mask[i,j]>0:
                     if self.mask[i+1,j] <> 0.:
-                        lines.append(plt.Line2D((x[i], x[i+1]), (y[j], y[j]), color='k'))
+                        lines.append(plt.Line2D((self.x[i], self.x[i+1]), (self.y[j], self.y[j]), color='k'))
                     if self.mask[i,j+1] <> 0.:
-                        lines.append(plt.Line2D((x[i], x[i]), (y[j], y[j+1]), color='k'))
+                        lines.append(plt.Line2D((self.x[i], self.x[i]), (self.y[j], self.y[j+1]), color='k'))
         
         i = self.mesh_size[0] - 1
         for j in xrange(self.mesh_size[1]-1):
             if self.mask[i,j]>0:
                 if self.mask[i,j+1] <> 0.:
-                    lines.append(plt.Line2D((x[i], x[i]), (y[j], y[j+1]), color='k'))
+                    lines.append(plt.Line2D((self.x[i], self.x[i]), (self.y[j], self.y[j+1]), color='k'))
     
         j = self.mesh_size[1] - 1
         for i in xrange(self.mesh_size[0]-1):
             if self.mask[i,j]>0:
                 if self.mask[i+1,j] <> 0.:
-                    lines.append(plt.Line2D((x[i], x[i+1]), (y[j], y[j]), color='k'))
+                    lines.append(plt.Line2D((self.x[i], self.x[i+1]), (self.y[j], self.y[j]), color='k'))
     
         fig = plt.gcf()
         for i in xrange(len(lines)):
