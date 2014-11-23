@@ -69,9 +69,14 @@ class rectmesh:
                     scalar = vec[n,0]*vec[n+1, 0] + vec[n, 1]*vec[n+1, 1]
                     norm1 = np.sqrt(vec[n, 0]**2 + vec[n, 1]**2)
                     norm2 = np.sqrt(vec[n+1, 0]**2 + vec[n+1, 1]**2)
-                    sign_det = vec[n, 0]*vec[n+1, 1] - vec[n, 1]*vec[n+1, 0]
+                    sign_det = np.sign(vec[n, 0]*vec[n+1, 1] - vec[n, 1]*vec[n+1, 0])
+                    
+                    if norm1 or norm2 == 0.:
+                       ang = 1.
+                       break
                     
                     ang += np.arccos(scalar / (norm1 * norm2)) * sign_det
+                    print ang
                 if abs(ang) < droptol:
                     mask[i,j] = 0.
     
