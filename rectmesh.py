@@ -71,7 +71,7 @@ class rectmesh:
                     norm2 = np.sqrt(vec[n+1, 0]**2 + vec[n+1, 1]**2)
                     sign_det = np.sign(vec[n, 0]*vec[n+1, 1] - vec[n, 1]*vec[n+1, 0])
                     
-                    if norm1 or norm2 == 0.:
+                    if norm1 == 0. or norm2 == 0.:
                        ang = 1.
                        break
                     
