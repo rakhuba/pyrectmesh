@@ -163,11 +163,20 @@ class rectmesh:
                 else:
                     self.add_neumann_boundary(ind1[1: -1], ind2, self.boundary[i][1])
                 
+            
+            mask_aux = np.zeros((self.mask.shape[0] + 2, self.mask.shape[1] + 2))
+            mask_aux[1:-1, 1:-1] = self.mask.copy()
                         
-
             if self.boundary[i][0] == self.boundary[i-1][0] and self.boundary[i][0] == 'N':
-                self.mask[self.nodes[i][0], self.nodes[i][1]] = 4 # Neumann-Neumann point
-                self.add_neumann_neumann_boundary([ind1[0]], [ind2[0]], self.boundary[i][1])
+                
+                a1 = mask_aux[self.nodes[i][0], self.nodes[i][1] + 1]
+                a2 = mask_aux[self.nodes[i][0] + 1, self.nodes[i][1]]
+                a3 = mask_aux[self.nodes[i][0] + 2, self.nodes[i][1] + 1]
+                a4 = mask_aux[self.nodes[i][0] + 1, self.nodes[i][1] + 2]
+
+                if a1*a2*a3*a4 == 0.:
+                    self.mask[self.nodes[i][0], self.nodes[i][1]] = 4 # Neumann-Neumann point
+                    self.add_neumann_neumann_boundary([ind1[0]], [ind2[0]], self.boundary[i][1])
         return
     
     def create_order(self):
