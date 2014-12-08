@@ -226,29 +226,49 @@ class rectmesh:
     
     
     def plot(self):
-        lines = []
-        for i in xrange(self.mesh_size[0]-1):
-            for j in xrange(self.mesh_size[1]-1):
-                if self.mask[i,j]>0:
-                    if self.mask[i+1,j] <> 0.:
-                        lines.append(plt.Line2D((self.x[i], self.x[i+1]), (self.y[j], self.y[j]), color='k'))
-                    if self.mask[i,j+1] <> 0.:
-                        lines.append(plt.Line2D((self.x[i], self.x[i]), (self.y[j], self.y[j+1]), color='k'))
         
-        i = self.mesh_size[0] - 1
-        for j in xrange(self.mesh_size[1]-1):
-            if self.mask[i,j]>0:
-                if self.mask[i,j+1] <> 0.:
-                    lines.append(plt.Line2D((self.x[i], self.x[i]), (self.y[j], self.y[j+1]), color='k'))
-    
-        j = self.mesh_size[1] - 1
-        for i in xrange(self.mesh_size[0]-1):
-            if self.mask[i,j]>0:
-                if self.mask[i+1,j] <> 0.:
-                    lines.append(plt.Line2D((self.x[i], self.x[i+1]), (self.y[j], self.y[j]), color='k'))
-    
+        mask_aux = np.zeros((self.mask.shape[0] + 2, self.mask.shape[1] + 2))
+        mask_aux[1:-1, 1:-1] = self.mask.copy()
+        
+        lines = []
+        flag = 0.
+        for i in xrange(self.mesh_size[0]+1):
+            for j in xrange(self.mesh_size[1]+1):
+                
+                if mask_aux[i, j] > 0. and flag == 0.:
+                    i0 = i - 1
+                    j0 = j - 1
+                    flag = 1.
+                
+                elif mask_aux[i, j] > 0. and flag <> 0.:
+                    i1 = i - 1
+                    j1 = j - 1
+        
+                elif mask_aux[i, j] == 0. and flag <> 0.:
+                    lines.append(plt.Line2D((self.x[i0], self.x[i1]), (self.y[j0], self.y[j1]), color='k'))
+                    flag = 0.
+
+        for j in xrange(self.mesh_size[1]+1):
+            for i in xrange(self.mesh_size[0]+1):
+                
+                if mask_aux[i, j] > 0. and flag == 0.:
+                    i0 = i - 1
+                    j0 = j - 1
+                    flag = 1.
+                    
+                elif mask_aux[i, j] > 0. and flag <> 0.:
+                    i1 = i - 1
+                    j1 = j - 1
+                    
+                elif mask_aux[i, j] == 0. and flag <> 0.:
+                    lines.append(plt.Line2D((self.x[i0], self.x[i1]), (self.y[j0], self.y[j1]), color='k'))
+                    flag = 0.
+        
         fig = plt.gcf()
+        fig.gca().set_xlim((self.x[0], self.x[-1]))
+        fig.gca().set_ylim((self.y[0], self.y[-1]))
+            
         for i in xrange(len(lines)):
             fig.gca().add_artist(lines[i])
-
+        
 
