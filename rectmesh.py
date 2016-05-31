@@ -60,7 +60,6 @@ class rectmesh:
     def make_mask(self): # winding points way
         mask = np.ones(self.mesh_size) #sp.sparse.coo_matrix(self.mesh_size)
         droptol = 1e-6
-
         #cdef int i
         #cdef int j
         #cdef int n
