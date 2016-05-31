@@ -60,6 +60,7 @@ class rectmesh:
     def make_mask(self): # winding points way
         mask = np.ones(self.mesh_size) #sp.sparse.coo_matrix(self.mesh_size)
         droptol = 1e-6
+
         #cdef int i
         #cdef int j
         #cdef int n
@@ -106,9 +107,12 @@ class rectmesh:
         self.neumann_boundary.append([ind1, ind2, values])
         return
 
-    def create_boundary(self):
+    def create_boundary(self, boundary):
 
-        for i in xrange(len(self.boundary)):
+        self.dirichlet_boundary = []
+        self.neumann_boundary = []
+
+        for i in xrange(len(boundary)):
 
             ind10 = self.nodes[i, 0]
             ind11 = self.nodes[i + 1, 0]
@@ -147,32 +151,32 @@ class rectmesh:
                 raise Exception('Check nodes')
 
 
-            if self.boundary[i][0] == 'D':
+            if boundary[i][0] == 'D':
 
-                if self.boundary[i - 1][0] == 'D':
+                if boundary[i - 1][0] == 'D':
 
                     if ind10 == ind11:
-                        self.add_dirichlet_boundary(ind1, ind2[1:], self.boundary[i][1])
+                        self.add_dirichlet_boundary(ind1, ind2[1:], boundary[i][1])
                     else:
-                        self.add_dirichlet_boundary(ind1[1:], ind2, self.boundary[i][1])
+                        self.add_dirichlet_boundary(ind1[1:], ind2, boundary[i][1])
 
-                if self.boundary[i - 1][0] == 'N':
+                if boundary[i - 1][0] == 'N':
 
-                    self.add_dirichlet_boundary(ind1, ind2, self.boundary[i][1])
+                    self.add_dirichlet_boundary(ind1, ind2, boundary[i][1])
 
 
-            elif self.boundary[i][0] == 'N':
+            elif boundary[i][0] == 'N':
 
                 if ind10 == ind11:
-                    self.add_neumann_boundary(ind1, ind2[1: -1], self.boundary[i][1])
+                    self.add_neumann_boundary(ind1, ind2[1: -1], boundary[i][1])
                 else:
-                    self.add_neumann_boundary(ind1[1: -1], ind2, self.boundary[i][1])
+                    self.add_neumann_boundary(ind1[1: -1], ind2, boundary[i][1])
 
 
             mask_aux = np.zeros((self.mask.shape[0] + 2, self.mask.shape[1] + 2))
             mask_aux[1:-1, 1:-1] = self.mask.copy()
 
-            if self.boundary[i][0] == self.boundary[i-1][0] and self.boundary[i][0] == 'N':
+            if boundary[i][0] == boundary[i-1][0] and boundary[i][0] == 'N':
 
                 a1 = mask_aux[self.nodes[i][0], self.nodes[i][1] + 1]
                 a2 = mask_aux[self.nodes[i][0] + 1, self.nodes[i][1]]
@@ -181,7 +185,7 @@ class rectmesh:
 
                 if a1*a2*a3*a4 == 0.:
                     self.mask[self.nodes[i][0], self.nodes[i][1]] = 4 # Neumann-Neumann point
-                    self.add_neumann_neumann_boundary([ind1[0]], [ind2[0]], self.boundary[i][1])
+                    self.add_neumann_neumann_boundary([ind1[0]], [ind2[0]], boundary[i][1])
         return
 
     def create_order(self):
